@@ -1210,6 +1210,9 @@ section {
   text-decoration: none;
 }
 
+.about-social { display: none; }
+
+
 .social-card:hover {
   background: var(--hover-bg);
   transform: translateY(-2px);
