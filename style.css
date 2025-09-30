@@ -1158,26 +1158,31 @@ section {
 }
 
 .about-content {
-  display: flex;
-  justify-content;
-  align-items: start;
+  max-width: 900px;
+  margin: 0 auto;
 }
 
 .about-text p {
   font-size: var(--font-size-lg);
   margin-bottom: var(--space-24);
+  text-align: left;
 }
 
-.skills h3,
-.social-links h3 {
+.skills {
+  margin-top: var(--space-48);
+}
+
+.skills h3 {
   margin-bottom: var(--space-24);
   color: var(--color-text);
+  text-align: center;
 }
 
 .skills-grid {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-12);
+  justify-content: center;
 }
 
 .skill-tag {
@@ -1189,49 +1194,6 @@ section {
   font-weight: var(--font-weight-medium);
   border: 1px solid var(--color-border);
   transition: all var(--duration-fast) var(--ease-standard);
-}
-
-.social-grid {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-16);
-}
-
-.social-card {
-  display: flex;
-  align-items: center;
-  gap: var(--space-16);
-  padding: var(--space-16);
-  background: var(--card-bg);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--color-border);
-  transition: all var(--duration-normal) var(--ease-standard);
-  text-decoration: none;
-}
-
-.about-social { display: none; }
-
-
-.social-card:hover {
-  background: var(--hover-bg);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
-}
-
-.social-icon {
-  font-size: var(--font-size-3xl);
-}
-
-.social-info h4 {
-  color: var(--color-text);
-  margin-bottom: var(--space-4);
-  font-size: var(--font-size-base);
-}
-
-.social-info p {
-  color: var(--color-text-secondary);
-  margin: 0;
-  font-size: var(--font-size-sm);
 }
 
 /* Blog Section */
@@ -1608,11 +1570,6 @@ textarea.form-control {
 
 /* Responsive Design */
 @media (max-width: 1024px) {
-  .about-content {
-    grid-template-columns: 1fr;
-    gap: var(--space-48);
-  }
-  
   .contact-content {
     grid-template-columns: 1fr;
     gap: var(--space-48);
