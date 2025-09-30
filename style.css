@@ -1158,9 +1158,8 @@ section {
 }
 
 .about-content {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: var(--space-64);
+  display: flex;
+  justify-content;
   align-items: start;
 }
 
