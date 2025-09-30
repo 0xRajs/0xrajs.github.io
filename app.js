@@ -1,455 +1,285 @@
-// DOM Content Loaded
-document.addEventListener('DOMContentLoaded', function() {
-    // Navigation elements
-    const navbar = document.getElementById('navbar');
-    const navToggle = document.getElementById('nav-toggle');
-    const navMenu = document.getElementById('nav-menu');
-    const navLinks = document.querySelectorAll('.nav-link');
-    const backToTopBtn = document.getElementById('back-to-top');
-    const contactForm = document.getElementById('contact-form');
-
-    // Mobile Navigation Toggle
-    navToggle.addEventListener('click', function() {
-        navMenu.classList.toggle('active');
-        navToggle.classList.toggle('active');
-    });
-
-    // Close mobile menu when clicking on a link
-    navLinks.forEach(link => {
-        link.addEventListener('click', () => {
-            navMenu.classList.remove('active');
-            navToggle.classList.remove('active');
-        });
-    });
-
-    // Smooth scrolling for navigation links
-    navLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            const targetId = this.getAttribute('href');
-            const targetSection = document.querySelector(targetId);
-            
-            if (targetSection) {
-                const headerHeight = navbar.offsetHeight;
-                const targetPosition = targetSection.offsetTop - headerHeight;
-                
-                window.scrollTo({
-                    top: targetPosition,
-                    behavior: 'smooth'
-                });
-            }
-        });
-    });
-
-    // Navbar scroll effect
-    let lastScrollTop = 0;
-    window.addEventListener('scroll', function() {
-        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        
-        // Add scrolled class for background effect
-        if (scrollTop > 50) {
-            navbar.classList.add('scrolled');
-        } else {
-            navbar.classList.remove('scrolled');
-        }
-        
-        // Show/hide back to top button
-        if (scrollTop > 300) {
-            backToTopBtn.classList.add('visible');
-        } else {
-            backToTopBtn.classList.remove('visible');
-        }
-        
-        lastScrollTop = scrollTop;
-    });
-
-    // Active navigation link based on scroll position
-    const sections = document.querySelectorAll('section');
-    const observerOptions = {
-        root: null,
-        rootMargin: '-50% 0px -50% 0px',
-        threshold: 0
-    };
-
-    const observer = new IntersectionObserver(function(entries) {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const sectionId = entry.target.getAttribute('id');
-                navLinks.forEach(link => {
-                    link.classList.remove('active');
-                    if (link.getAttribute('href') === `#${sectionId}`) {
-                        link.classList.add('active');
-                    }
-                });
-            }
-        });
-    }, observerOptions);
-
-    sections.forEach(section => {
-        observer.observe(section);
-    });
-
-    // Back to top button functionality
-    backToTopBtn.addEventListener('click', function() {
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-        });
-    });
-
-    // Contact form handling
-    contactForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        // Get form data
-        const formData = new FormData(this);
-        const name = formData.get('name').trim();
-        const email = formData.get('email').trim();
-        const message = formData.get('message').trim();
-        
-        // Validate form
-        const errors = validateForm(name, email, message);
-        
-        if (errors.length > 0) {
-            showFormErrors(errors);
-            return;
-        }
-        
-        // Clear any previous errors
-        clearFormErrors();
-        
-        // Show success message (in a real app, you'd send data to a server)
-        showFormSuccess();
-        
-        // Reset form
-        this.reset();
-    });
-
-    // Form validation function
-    function validateForm(name, email, message) {
-        const errors = [];
-        
-        if (!name || name.length < 2) {
-            errors.push({ field: 'name', message: 'Name must be at least 2 characters long' });
-        }
-        
-        if (!email || !isValidEmail(email)) {
-            errors.push({ field: 'email', message: 'Please enter a valid email address' });
-        }
-        
-        if (!message || message.length < 10) {
-            errors.push({ field: 'message', message: 'Message must be at least 10 characters long' });
-        }
-        
-        return errors;
-    }
-    
-    // Email validation helper
-    function isValidEmail(email) {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(email);
-    }
-    
-    // Show form errors
-    function showFormErrors(errors) {
-        // Clear existing errors first
-        clearFormErrors();
-        
-        errors.forEach(error => {
-            const field = document.getElementById(error.field);
-            const formGroup = field.closest('.form-group');
-            
-            // Add error class to field
-            field.classList.add('error');
-            
-            // Create error message element
-            const errorElement = document.createElement('div');
-            errorElement.className = 'form-error';
-            errorElement.textContent = error.message;
-            errorElement.style.color = 'var(--color-error)';
-            errorElement.style.fontSize = 'var(--font-size-sm)';
-            errorElement.style.marginTop = 'var(--space-4)';
-            
-            // Insert error message after the field
-            formGroup.appendChild(errorElement);
-        });
-    }
-    
-    // Clear form errors
-    function clearFormErrors() {
-        const errorElements = document.querySelectorAll('.form-error');
-        const errorFields = document.querySelectorAll('.form-control.error');
-        
-        errorElements.forEach(el => el.remove());
-        errorFields.forEach(field => field.classList.remove('error'));
-    }
-    
-    // Show form success message
-    function showFormSuccess() {
-        // Create success message
-        const successElement = document.createElement('div');
-        successElement.className = 'form-success';
-        successElement.innerHTML = `
-            <div style="
-                background: rgba(50, 184, 198, 0.1);
-                border: 1px solid rgba(50, 184, 198, 0.3);
-                color: var(--color-success);
-                padding: var(--space-16);
-                border-radius: var(--radius-base);
-                margin-bottom: var(--space-16);
-                text-align: center;
-                font-weight: var(--font-weight-medium);
-            ">
-                ✓ Message sent successfully! I'll get back to you soon.
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aditya Singh - Cybersecurity Portfolio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="#home">Aditya Singh</a>
             </div>
-        `;
-        
-        // Insert success message at the top of the form
-        contactForm.insertBefore(successElement, contactForm.firstChild);
-        
-        // Remove success message after 5 seconds
-        setTimeout(() => {
-            if (successElement.parentNode) {
-                successElement.remove();
-            }
-        }, 5000);
-    }
-    
-    // Add error styles to CSS dynamically
-    const errorStyles = `
-        .form-control.error {
-            border-color: var(--color-error);
-            box-shadow: 0 0 0 3px rgba(255, 84, 89, 0.1);
-        }
-        
-        .form-control.error:focus {
-            border-color: var(--color-error);
-            box-shadow: 0 0 0 3px rgba(255, 84, 89, 0.2);
-        }
-    `;
-    
-    // Inject error styles
-    const styleSheet = document.createElement('style');
-    styleSheet.textContent = errorStyles;
-    document.head.appendChild(styleSheet);
+            <div class="nav-menu" id="nav-menu">
+                <a href="#home" class="nav-link">Home</a>
+                <a href="#about" class="nav-link">About</a>
+                <a href="#blog" class="nav-link">Blog</a>
+                <a href="#resume" class="nav-link">Resume</a>
+                <a href="#projects" class="nav-link">Projects</a>
+                <a href="#contact" class="nav-link">Contact</a>
+            </div>
+            <div class="nav-toggle" id="nav-toggle">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
 
-    // Animated elements on scroll
-    const animatedElements = document.querySelectorAll('.blog-card, .project-card, .social-card');
-    const animationObserver = new IntersectionObserver(function(entries) {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.opacity = '1';
-                entry.target.style.transform = 'translateY(0)';
-            }
-        });
-    }, {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    });
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1 class="hero-name">Aditya Singh</h1>
+            <p class="hero-subtitle">Cybersecurity Enthusiast | Web Application Security | Bug Bounty Hunter</p>
+            <p class="hero-description">Passionate cybersecurity professional specializing in web application security and penetration testing. I enjoy discovering vulnerabilities through bug bounty programs and contributing to the security community through research and write-ups.</p>
+            <div class="hero-cta">
+                <a href="#about" class="btn btn--primary">Learn More</a>
+                <a href="#contact" class="btn btn--outline">Get In Touch</a>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <div class="scroll-arrow"></div>
+        </div>
+    </section>
 
-    // Set initial state for animated elements
-    animatedElements.forEach(element => {
-        element.style.opacity = '0';
-        element.style.transform = 'translateY(20px)';
-        element.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-        animationObserver.observe(element);
-    });
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="container">
+            <div class="section-header">
+                <h2>About Me</h2>
+                <div class="section-divider"></div>
+            </div>
+            <div class="about-content">
+                <div class="about-text">
+                    <p>I am a dedicated cybersecurity professional with expertise in web application security, penetration testing, and vulnerability research. My journey in cybersecurity began with a fascination for understanding how systems work and how they can be secured.</p>
+                    <p>I specialize in identifying and exploiting web application vulnerabilities, participating in bug bounty programs, and conducting comprehensive security assessments. My experience spans across various domains including OWASP Top 10 vulnerabilities, API security testing, and manual code review. I am passionate about sharing knowledge through technical write-ups and contributing to the cybersecurity community.</p>
+                    <p>When I'm not hunting for bugs, I enjoy creating security tools and participating in CTF competitions to sharpen my skills. My approach combines technical expertise with continuous learning, ensuring I stay current with the evolving threat landscape.</p>
+                    
+                    <div class="skills">
+                        <h3>Areas of Expertise</h3>
+                        <div class="skills-grid">
+                            <span class="skill-tag">Web Application Security</span>
+                            <span class="skill-tag">Penetration Testing</span>
+                            <span class="skill-tag">Bug Bounty Hunting</span>
+                            <span class="skill-tag">OWASP Top 10</span>
+                            <span class="skill-tag">Burp Suite</span>
+                            <span class="skill-tag">Vulnerability Assessment</span>
+                            <span class="skill-tag">Security Research</span>
+                            <span class="skill-tag">API Security</span>
+                            <span class="skill-tag">Manual Code Review</span>
+                            <span class="skill-tag">CTF Competitions</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    // Typing effect for hero subtitle (optional enhancement)
-    const heroSubtitle = document.querySelector('.hero-subtitle');
-    if (heroSubtitle) {
-        const originalText = heroSubtitle.textContent;
-        heroSubtitle.textContent = '';
-        
-        let charIndex = 0;
-        const typingSpeed = 50;
-        
-        function typeText() {
-            if (charIndex < originalText.length) {
-                heroSubtitle.textContent += originalText[charIndex];
-                charIndex++;
-                setTimeout(typeText, typingSpeed);
-            }
-        }
-        
-        // Start typing effect after a short delay
-        setTimeout(typeText, 1000);
-    }
+    <!-- Blog Section -->
+    <section id="blog" class="blog">
+        <div class="container">
+            <div class="section-header">
+                <h2>Latest Write-ups & Research</h2>
+                <div class="section-divider"></div>
+            </div>
+            <div class="blog-grid">
+                <article class="blog-card">
+                    <div class="blog-meta">
+                        <span class="blog-date">December 15, 2024</span>
+                        <span class="blog-read-time">8 min read</span>
+                    </div>
+                    <h3>SQL Injection in Modern Web Applications</h3>
+                    <p>A deep dive into identifying and exploiting SQL injection vulnerabilities in contemporary web applications using advanced techniques.</p>
+                    <a href="#" class="btn btn--outline btn--sm">Read More</a>
+                </article>
+                
+                <article class="blog-card">
+                    <div class="blog-meta">
+                        <span class="blog-date">November 28, 2024</span>
+                        <span class="blog-read-time">12 min read</span>
+                    </div>
+                    <h3>XSS Exploitation Techniques and Prevention</h3>
+                    <p>Comprehensive analysis of Cross-Site Scripting vulnerabilities, exploitation methods, and effective prevention strategies.</p>
+                    <a href="#" class="btn btn--outline btn--sm">Read More</a>
+                </article>
+                
+                <article class="blog-card">
+                    <div class="blog-meta">
+                        <span class="blog-date">November 10, 2024</span>
+                        <span class="blog-read-time">15 min read</span>
+                    </div>
+                    <h3>Bug Bounty Methodology: A Systematic Approach</h3>
+                    <p>My personal methodology for successful bug bounty hunting, including reconnaissance, testing, and reporting techniques.</p>
+                    <a href="#" class="btn btn--outline btn--sm">Read More</a>
+                </article>
+                
+                <article class="blog-card">
+                    <div class="blog-meta">
+                        <span class="blog-date">October 22, 2024</span>
+                        <span class="blog-read-time">10 min read</span>
+                    </div>
+                    <h3>API Security Testing: Common Vulnerabilities</h3>
+                    <p>Exploring common API security issues and effective testing methodologies for REST and GraphQL APIs.</p>
+                    <a href="#" class="btn btn--outline btn--sm">Read More</a>
+                </article>
+            </div>
+        </div>
+    </section>
 
-    // Resume iframe fallback handling
-    const resumeIframe = document.querySelector('.resume-viewer iframe');
-    const resumeFallback = document.querySelector('.resume-fallback');
-    
-    if (resumeIframe && resumeFallback) {
-        // Initially hide the fallback
-        resumeFallback.style.display = 'none';
-        
-        // Show fallback if iframe fails to load
-        resumeIframe.addEventListener('error', function() {
-            resumeFallback.style.display = 'block';
-        });
-        
-        // Hide fallback if iframe loads successfully
-        resumeIframe.addEventListener('load', function() {
-            resumeFallback.style.display = 'none';
-        });
-        
-        // Check if iframe content loaded after a timeout
-        setTimeout(() => {
-            try {
-                if (!resumeIframe.contentDocument && !resumeIframe.contentWindow) {
-                    resumeFallback.style.display = 'block';
-                }
-            } catch (e) {
-                // Cross-origin restrictions might prevent access
-                // In this case, assume the PDF is loading
-                console.log('Resume iframe cross-origin access restricted');
-            }
-        }, 3000);
-    }
+    <!-- Resume Section -->
+    <section id="resume" class="resume">
+        <div class="container">
+            <div class="section-header">
+                <h2>Resume</h2>
+                <div class="section-divider"></div>
+            </div>
+            <div class="resume-container">
+                <div class="resume-viewer">
+                    <div class="resume-fallback">
+                        <h3>Resume Preview</h3>
+                        <p>My comprehensive resume detailing my cybersecurity experience, skills, and achievements. Please use the download link below to access the full document.</p>
+                        <a href="assets/resume.pdf" target="_blank" class="btn btn--primary">Download Resume</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    // Smooth reveal animations for sections
-    const revealElements = document.querySelectorAll('.section-header, .about-content, .contact-content');
-    const revealObserver = new IntersectionObserver(function(entries) {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('revealed');
-            }
-        });
-    }, {
-        threshold: 0.15
-    });
+    <!-- Projects Section -->
+    <section id="projects" class="projects">
+        <div class="container">
+            <div class="section-header">
+                <h2>Cybersecurity Projects</h2>
+                <div class="section-divider"></div>
+            </div>
+            <div class="projects-grid">
+                <div class="project-card">
+                    <div class="project-header">
+                        <h3>WebVuln Scanner</h3>
+                        <span class="project-status status--success">Active Development</span>
+                    </div>
+                    <p>A comprehensive web vulnerability scanner built in Python that automates the detection of common web application security flaws including XSS, SQL injection, and CSRF vulnerabilities.</p>
+                    <div class="project-tech">
+                        <span class="tech-tag">Python</span>
+                        <span class="tech-tag">Requests</span>
+                        <span class="tech-tag">BeautifulSoup</span>
+                        <span class="tech-tag">Threading</span>
+                    </div>
+                    <a href="#" class="btn btn--primary btn--sm">View Details</a>
+                </div>
+                
+                <div class="project-card">
+                    <div class="project-header">
+                        <h3>CTF Writeup Collection</h3>
+                        <span class="project-status status--info">Ongoing</span>
+                    </div>
+                    <p>Detailed writeups and solutions for various Capture The Flag competitions, focusing on web exploitation, cryptography, and reverse engineering challenges.</p>
+                    <div class="project-tech">
+                        <span class="tech-tag">Multiple Languages</span>
+                        <span class="tech-tag">Web Exploitation</span>
+                        <span class="tech-tag">Cryptography</span>
+                    </div>
+                    <a href="#" class="btn btn--primary btn--sm">View Details</a>
+                </div>
+                
+                <div class="project-card">
+                    <div class="project-header">
+                        <h3>Security Assessment Framework</h3>
+                        <span class="project-status status--warning">Beta Release</span>
+                    </div>
+                    <p>A modular framework for conducting comprehensive security assessments of web applications, including automated scanning and manual testing capabilities.</p>
+                    <div class="project-tech">
+                        <span class="tech-tag">Python</span>
+                        <span class="tech-tag">Docker</span>
+                        <span class="tech-tag">REST APIs</span>
+                        <span class="tech-tag">Selenium</span>
+                    </div>
+                    <a href="#" class="btn btn--primary btn--sm">View Details</a>
+                </div>
+                
+                <div class="project-card">
+                    <div class="project-header">
+                        <h3>Vulnerability Research Lab</h3>
+                        <span class="project-status status--info">Research Phase</span>
+                    </div>
+                    <p>A controlled environment for researching zero-day vulnerabilities and testing exploit techniques on various web technologies and frameworks.</p>
+                    <div class="project-tech">
+                        <span class="tech-tag">Docker</span>
+                        <span class="tech-tag">Virtual Machines</span>
+                        <span class="tech-tag">Various Web Frameworks</span>
+                    </div>
+                    <a href="#" class="btn btn--primary btn--sm">View Details</a>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    revealElements.forEach(element => {
-        revealObserver.observe(element);
-    });
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <div class="section-header">
+                <h2>Get In Touch</h2>
+                <div class="section-divider"></div>
+            </div>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <h3>Let's Connect</h3>
+                    <p>Interested in collaborating or discussing cybersecurity? Feel free to reach out through any of the channels below.</p>
+                    <div class="contact-methods">
+                        <a href="mailto:aditya.singh.cybersec@gmail.com" class="contact-method">
+                            <span class="contact-icon">📧</span>
+                            <span>aditya.singh.cybersec@gmail.com</span>
+                        </a>
+                        <a href="https://linkedin.com/in/adityasingh-cybersec" target="_blank" class="contact-method">
+                            <span class="contact-icon">💼</span>
+                            <span>LinkedIn Profile</span>
+                        </a>
+                        <a href="https://github.com/adityasingh" target="_blank" class="contact-method">
+                            <span class="contact-icon">🐙</span>
+                            <span>GitHub Profile</span>
+                        </a>
+                    </div>
+                </div>
+                <form class="contact-form" id="contact-form">
+                    <div class="form-group">
+                        <label for="name" class="form-label">Name</label>
+                        <input type="text" id="name" name="name" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" id="email" name="email" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="message" class="form-label">Message</label>
+                        <textarea id="message" name="message" class="form-control" rows="5" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn--primary btn--full-width">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </section>
 
-    // Add reveal styles
-    const revealStyles = `
-        .section-header,
-        .about-content,
-        .contact-content {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.8s ease, transform 0.8s ease;
-        }
-        
-        .section-header.revealed,
-        .about-content.revealed,
-        .contact-content.revealed {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    `;
-    
-    const revealStyleSheet = document.createElement('style');
-    revealStyleSheet.textContent = revealStyles;
-    document.head.appendChild(revealStyleSheet);
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p>&copy; 2025 Aditya Singh | Cybersecurity Portfolio</p>
+                <div class="footer-links">
+                    <a href="https://github.com/adityasingh" target="_blank">GitHub</a>
+                    <a href="https://linkedin.com/in/adityasingh-cybersec" target="_blank">LinkedIn</a>
+                    <a href="mailto:aditya.singh.cybersec@gmail.com">Email</a>
+                </div>
+            </div>
+            <button class="back-to-top" id="back-to-top" aria-label="Back to top">↑</button>
+        </div>
+    </footer>
 
-    // Parallax effect for hero section (subtle)
-    let ticking = false;
-    
-    function updateParallax() {
-        const scrolled = window.pageYOffset;
-        const hero = document.querySelector('.hero');
-        const heroHeight = hero.offsetHeight;
-        
-        if (scrolled < heroHeight) {
-            const rate = scrolled * -0.3;
-            hero.style.transform = `translateY(${rate}px)`;
-        }
-        
-        ticking = false;
-    }
-    
-    function requestParallaxTick() {
-        if (!ticking) {
-            requestAnimationFrame(updateParallax);
-            ticking = true;
-        }
-    }
-    
-    window.addEventListener('scroll', requestParallaxTick);
-
-    // Skills tags hover effect enhancement
-    const skillTags = document.querySelectorAll('.skill-tag');
-    skillTags.forEach(tag => {
-        tag.addEventListener('mouseenter', function() {
-            this.style.transform = 'translateY(-2px)';
-            this.style.boxShadow = '0 4px 12px rgba(0, 212, 255, 0.15)';
-        });
-        
-        tag.addEventListener('mouseleave', function() {
-            this.style.transform = 'translateY(0)';
-            this.style.boxShadow = 'none';
-        });
-    });
-
-    // Tech tags hover effect enhancement
-    const techTags = document.querySelectorAll('.tech-tag');
-    techTags.forEach(tag => {
-        tag.addEventListener('mouseenter', function() {
-            this.style.backgroundColor = 'rgba(255, 255, 255, 0.15)';
-            this.style.color = 'var(--color-text)';
-        });
-        
-        tag.addEventListener('mouseleave', function() {
-            this.style.backgroundColor = 'var(--color-secondary)';
-            this.style.color = 'var(--color-text-secondary)';
-        });
-    });
-
-    // Console welcome message
-    console.log(`
-    🚀 Welcome to Aditya Singh's Cybersecurity Portfolio!
-    
-    This portfolio showcases expertise in:
-    • Web Application Security
-    • Penetration Testing  
-    • Bug Bounty Hunting
-    • Security Research
-    
-    Built with modern web technologies for optimal performance.
-    
-    Contact: aditya.singh.cybersec@gmail.com
-    `);
-});
-
-// Utility functions
-function debounce(func, wait) {
-    let timeout;
-    return function executedFunction(...args) {
-        const later = () => {
-            clearTimeout(timeout);
-            func(...args);
-        };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-    };
-}
-
-// Performance optimization - debounce scroll events
-const debouncedScrollHandler = debounce(function() {
-    // Any expensive scroll operations can be placed here
-}, 10);
-
-window.addEventListener('scroll', debouncedScrollHandler);
-
-// Error handling for any unhandled promise rejections
-window.addEventListener('unhandledrejection', function(event) {
-    console.error('Unhandled promise rejection:', event.reason);
-});
-
-// Service worker registration (for future PWA capabilities)
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function() {
-        // Uncomment when you have a service worker
-        // navigator.serviceWorker.register('/sw.js')
-        //   .then(function(registration) {
-        //     console.log('ServiceWorker registration successful');
-        //   })
-        //   .catch(function(err) {
-        //     console.log('ServiceWorker registration failed');
-        //   });
-    });
-}
+    <script src="app.js"></script>
+</body>
+</html>
