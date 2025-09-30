@@ -140,10 +140,23 @@
                 <div class="section-divider"></div>
             </div>
             <div class="resume-container">
+                <div class="resume-controls">
+                    <a href="assets/resume.pdf" target="_blank" class="btn btn--primary">Download Resume</a>
+                </div>
                 <div class="resume-viewer">
-                    <div class="resume-fallback">
+                    <div class="resume-loading" id="resume-loading">
+                        <div class="loading-spinner"></div>
+                        <p>Loading resume...</p>
+                    </div>
+                    <iframe 
+                        id="resume-iframe"
+                        src="assets/resume.pdf" 
+                        style="width: 100%; height: 800px; border: none; border-radius: var(--radius-lg);"
+                        title="Aditya Singh Resume">
+                    </iframe>
+                    <div class="resume-fallback hidden" id="resume-fallback">
                         <h3>Resume Preview</h3>
-                        <p>My comprehensive resume detailing my cybersecurity experience, skills, and achievements. Please use the download link below to access the full document.</p>
+                        <p>The resume PDF couldn't be displayed directly in your browser. Please use the download link above to view the full document.</p>
                         <a href="assets/resume.pdf" target="_blank" class="btn btn--primary">Download Resume</a>
                     </div>
                 </div>
